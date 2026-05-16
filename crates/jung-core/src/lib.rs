@@ -25,6 +25,7 @@ pub mod topographic;
 pub mod antialias;
 pub mod curved_label;
 pub mod mvt;
+pub mod ogc;
 pub mod symbols;
 pub mod text;
 

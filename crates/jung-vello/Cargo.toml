@@ -1,0 +1,12 @@
+[package]
+name = "jung-vello"
+version = "0.1.0"
+edition = "2024"
+license = "AGPL-3.0-or-later"
+description = "GPU-accelerated rendering backend for Jung using Vello"
+authors = ["TileTopia <tiletopia@proton.me>"]
+
+[dependencies]
+jung-core = { path = "../jung-core" }
+jung-style = { path = "../jung-style" }
+vello = "0.9"

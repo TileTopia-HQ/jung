@@ -32,10 +32,22 @@ Jung transforms geospatial features + style definitions into rendered output (ra
 - **Topographic** — contour lines (index/intermediate/supplementary), analytical hillshading (Horn's method), hypsometric tinting (elevation-to-color), DEM processing
 - **Rule-Based Cascading** — multiple rules per feature with priority cascade, zoom-bounded rules, expression-based filters, source tracking for debugging
 
+### GPU Rendering
+- **Vello Backend** — GPU-accelerated rendering via `jung-vello` crate, scene graph construction, wgpu integration
+- **Layer Composition** — per-layer scene building with configurable paint properties
+- **Coordinate Projection** — geographic-to-screen transform with bbox mapping
+
+### OGC Standards
+- **Well-Known Text (WKT)** — parse and serialize all geometry types
+- **Well-Known Binary (WKB)** — binary geometry serialization (little-endian)
+- **Filter Encoding** — property comparisons, LIKE patterns, logical operators (AND/OR/NOT), BBox spatial filter
+- **Simple Features** — envelope, area, length, centroid operations
+
 ### Output Formats
 - **Raster (RGBA pixels)** — direct pixel buffer output for tile generation
 - **SVG Vector Export** — circles, paths, polygons, text, groups with transforms, proper XML escaping
 - **High-DPI Print** — configurable DPI (72/300/600+), paper sizes (A4 etc.), margins, scale bars, north arrows
+- **GPU (Vello/wgpu)** — hardware-accelerated vector rendering via scene graph
 - **WebAssembly** — full engine in the browser via wasm-bindgen
 
 ### Input Formats
@@ -55,19 +67,21 @@ Jung transforms geospatial features + style definitions into rendered output (ra
 │  (parsing)  │     │ (rendering) │     │   (CLI)     │
 └─────────────┘     └─────────────┘     └─────────────┘
                            │
-                           ▼
-                    ┌─────────────┐
-                    │  jung-wasm  │
-                    │  (browser)  │
-                    └─────────────┘
+                      ┌────┴────┐
+                      ▼         ▼
+               ┌───────────┐ ┌───────────┐
+               │ jung-wasm │ │jung-vello │
+               │ (browser) │ │  (GPU)    │
+               └───────────┘ └───────────┘
 ```
 
 ### Crates
 
 | Crate | Description |
 |-------|-------------|
-| `jung-core` | Core rendering engine: geometry, symbology, classification, output |
+| `jung-core` | Core rendering engine: geometry, symbology, classification, OGC standards, output |
 | `jung-style` | Style specification parser (Mapbox GL JSON), expression engine, custom functions |
+| `jung-vello` | GPU-accelerated rendering backend via Vello/wgpu |
 | `jung-wasm` | WebAssembly bindings for browser-side rendering |
 | `jung-cli` | Command-line tool for batch rendering |
 
@@ -94,8 +108,12 @@ jung-core/
 ├── milstd2525.rs     — MIL-STD-2525 military symbology
 ├── maritime.rs       — S-52/S-57 nautical chart symbology
 ├── topographic.rs    — Contours, hillshade, hypsometric tinting
+├── ogc.rs            — OGC WKT/WKB, Filter Encoding, Simple Features ops
 ├── rules.rs          — Rule-based cascading style engine
 └── output.rs         — SVG export, print output, map furniture
+
+jung-vello/
+└── lib.rs            — Vello GPU scene builder, wgpu rendering
 
 jung-style/
 ├── expr.rs           — Expression AST, evaluation, StyleValue<T>
@@ -341,7 +359,7 @@ Jung uses a Mapbox GL-compatible style format:
 # Build all crates
 cargo build --all
 
-# Run tests (132 tests)
+# Run tests (202 tests)
 cargo test --all
 
 # Clippy lint check
