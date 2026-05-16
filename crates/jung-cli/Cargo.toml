@@ -1,0 +1,18 @@
+[package]
+name = "jung-cli"
+description = "Command-line tool for rendering geospatial features with Jung styles"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "jung"
+path = "src/main.rs"
+
+[dependencies]
+jung-core = { workspace = true }
+jung-style = { workspace = true }
+clap = { version = "4", features = ["derive"] }
+serde_json = { workspace = true }
