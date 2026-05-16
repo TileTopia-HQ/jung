@@ -5,6 +5,9 @@
 //! Takes styled geospatial features and produces rendered output
 //! (raw pixels, SVG, or vector draw commands).
 
+#![allow(unknown_lints)]
+#![allow(clippy::manual_checked_ops)]
+
 pub mod classification;
 pub mod clustering;
 pub mod extrusion;
