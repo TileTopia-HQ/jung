@@ -150,7 +150,7 @@ impl PriorityLabelEngine {
     pub fn place(&self, candidates: &[LabelCandidate]) -> Vec<PlacedLabel> {
         // Sort by priority (highest first)
         let mut sorted: Vec<&LabelCandidate> = candidates.iter().collect();
-        sorted.sort_by(|a, b| b.priority.cmp(&a.priority));
+        sorted.sort_by_key(|b| std::cmp::Reverse(b.priority));
 
         let cell_size = 50.0; // Grid cell size in pixels
         let mut grid = CollisionGrid::new(self.canvas_width, self.canvas_height, cell_size);
